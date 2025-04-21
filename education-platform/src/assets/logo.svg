@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="50" viewBox="0 0 240 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="25" cy="25" r="20" fill="#1976d2"/>
+  
+  <!-- Graduation cap -->
+  <path d="M15 25 L35 25 L25 18 Z" fill="white"/>
+  <path d="M25 25 L25 32" stroke="white" stroke-width="2"/>
+  <path d="M20 32 L30 32" stroke="white" stroke-width="2"/>
+  
+  <!-- Book pages dynamic effect -->
+  <path d="M20 22 C25 20, 30 20, 35 22" stroke="white" stroke-width="1.5" fill="none"/>
+  <path d="M20 24 C25 22, 30 22, 35 24" stroke="white" stroke-width="1.5" fill="none"/>
+  <path d="M20 26 C25 24, 30 24, 35 26" stroke="white" stroke-width="1.5" fill="none"/>
+  
+  <!-- Text with modern font -->
+  <text x="55" y="35" font-family="Arial, sans-serif" font-size="28" font-weight="bold">
+    <tspan fill="#1976d2">Edu</tspan>
+    <tspan fill="#2196f3">Platform</tspan>
+  </text>
+  
+  <!-- Decorative dots -->
+  <circle cx="55" cy="15" r="2" fill="#2196f3"/>
+  <circle cx="60" cy="15" r="2" fill="#1976d2"/>
+  <circle cx="65" cy="15" r="2" fill="#2196f3"/>
+</svg>

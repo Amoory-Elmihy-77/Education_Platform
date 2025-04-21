@@ -1,0 +1,157 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  /* Light mode variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --accent-primary: #1976d2;
+  --accent-secondary: #1565c0;
+  --accent-primary-rgb: 25, 118, 210;
+  --border-color: #e5e7eb;
+  --search-bg: #ffffff;
+  --search-text: #1f2937;
+  --search-border: #d1d5db;
+  --search-hover: #9ca3af;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --card-bg: #ffffff;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --hover-bg: rgba(0, 0, 0, 0.04);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-hover-transform: translateY(-4px);
+  --transition-speed: 0.3s;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --accent-primary: #60a5fa;
+  --accent-secondary: #3b82f6;
+  --accent-primary-rgb: 96, 165, 250;
+  --border-color: #374151;
+  --search-bg: #1f2937;
+  --search-text: #f9fafb;
+  --search-placeholder: #9ca3af;
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+  --card-bg: #1f2937;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --hover-bg: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --accent-primary: #60a5fa;
+  --accent-secondary: #3b82f6;
+  --border-color: #374151;
+  --search-bg: #374151;
+  --search-text: #f9fafb;
+  --search-border: #4b5563;
+  --search-hover: #6b7280;
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+  --card-bg: #1f2937;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Common Classes */
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.ml-1 { margin-left: 0.25rem; }
+.ml-2 { margin-left: 0.5rem; }
+.mr-2 { margin-right: 0.5rem; }
+.mx-4 { margin-left: 1rem; margin-right: 1rem; }
+
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.flex { display: flex; }
+.flex-grow { flex-grow: 1; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gap-4 { gap: 1rem; }
+
+.rounded-lg { border-radius: 0.5rem; }
+
+.no-underline { text-decoration: none; }
+
+.object-cover { object-fit: cover; }
+
+.sticky { position: sticky; }
+.top-24 { top: 6rem; }
+
+.bg-primary { background-color: #1976d2; }
+.bg-white { background-color: #fff; }
+.bg-gray-50 { background-color: #f9fafb; }
+.bg-gray-800 { background-color: #1f2937; }
+
+.text-white { color: #fff; }
+.text-primary { color: #1976d2; }
+
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+.transition-shadow { transition: box-shadow 0.3s ease-in-out; }
+.duration-300 { transition-duration: 300ms; }
+
+.hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.hover\:underline:hover { text-decoration: underline; }
+
+/* Aspect Ratio Container */
+.aspect-w-16 {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+
+.aspect-w-16 > * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* Custom Heights */
+.h-48 { height: 12rem; }
+.h-32 { height: 8rem; }
+
+/* Max Widths */
+.max-w-2xl { max-width: 42rem; }
