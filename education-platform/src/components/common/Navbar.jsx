@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -40,7 +41,13 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   // Apply dark mode to body
   useEffect(() => {
@@ -178,39 +185,68 @@ export default function Navbar() {
               </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Button
-                component={Link}
-                to="/login"
-                variant="text"
-                sx={{
-                  color: 'var(--text-primary)',
-                  display: { xs: 'none', sm: 'flex' },
-                  fontSize: { xs: '0.875rem', sm: '1rem' },
-                  py: { xs: 0.5, sm: 0.75 },
-                  px: { xs: 1, sm: 1.5 }
-                }}
-              >
-                Sign In
-              </Button>
-              <Button
-                component={Link}
-                to="/signup"
-                variant="contained"
-                sx={{
-                  backgroundColor: 'var(--accent-primary)',
-                  color: '#fff',
-                  display: { xs: 'none', sm: 'flex' },
-                  fontSize: { xs: '0.875rem', sm: '1rem' },
-                  py: { xs: 0.5, sm: 0.75 },
-                  px: { xs: 1.5, sm: 2 },
-                  '&:hover': {
-                    backgroundColor: 'var(--accent-secondary)'
-                  }
-                }}
-              >
-                Sign Up
-              </Button>
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1, alignItems: 'center' }}>
+              {currentUser ? (
+                <>
+                  <IconButton
+                    component={Link}
+                    to="/profile"
+                    color="inherit"
+                    sx={{ 
+                      borderRadius: 2,
+                      p: 1,
+                    }}
+                  >
+                    <PersonIcon />
+                  </IconButton>
+                  <Button
+                    color="inherit"
+                    onClick={handleLogout}
+                    startIcon={<LoginIcon />}
+                    sx={{ 
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    color="inherit"
+                    startIcon={<LoginIcon />}
+                    sx={{ 
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    component={Link}
+                    to="/signup"
+                    variant="contained"
+                    startIcon={<PersonAddIcon />}
+                    sx={{
+                      borderRadius: 2,
+                      backgroundColor: 'var(--accent-primary)',
+                      color: '#fff',
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                      '&:hover': {
+                        backgroundColor: 'var(--accent-secondary)',
+                      },
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </Box>
             <Box sx={{ 
               display: { xs: !mobileSearchOpen ? 'flex' : 'none', sm: 'flex' }, 
@@ -503,36 +539,67 @@ export default function Navbar() {
             </ListItemIcon>
             <ListItemText primary="Courses" />
           </ListItemButton>
-          <ListItemButton 
-            component={Link} 
-            to="/login"
-            onClick={() => setMobileMenuOpen(false)}
-            sx={{ borderRadius: 1, mb: 1 }}
-          >
-            <ListItemIcon>
-              <LoginIcon sx={{ color: 'var(--text-primary)' }} />
-            </ListItemIcon>
-            <ListItemText primary="Sign In" />
-          </ListItemButton>
-          <ListItemButton 
-            component={Link} 
-            to="/signup"
-            onClick={() => setMobileMenuOpen(false)}
-            sx={{ 
-              borderRadius: 1,
-              mb: 1,
-              backgroundColor: 'var(--accent-primary)',
-              color: '#fff',
-              '&:hover': {
-                backgroundColor: 'var(--accent-secondary)'
-              }
-            }}
-          >
-            <ListItemIcon>
-              <PersonAddIcon sx={{ color: '#fff' }} />
-            </ListItemIcon>
-            <ListItemText primary="Sign Up" />
-          </ListItemButton>
+
+          {currentUser ? (
+            <>
+              <ListItemButton 
+                component={Link} 
+                to="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                sx={{ borderRadius: 1, mb: 1 }}
+              >
+                <ListItemIcon>
+                  <PersonIcon sx={{ color: 'var(--text-primary)' }} />
+                </ListItemIcon>
+                <ListItemText primary="Profile" />
+              </ListItemButton>
+              <ListItemButton 
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+                sx={{ borderRadius: 1, mb: 1 }}
+              >
+                <ListItemIcon>
+                  <LoginIcon sx={{ color: 'var(--text-primary)' }} />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </>
+          ) : (
+            <>
+              <ListItemButton 
+                component={Link} 
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                sx={{ borderRadius: 1, mb: 1 }}
+              >
+                <ListItemIcon>
+                  <LoginIcon sx={{ color: 'var(--text-primary)' }} />
+                </ListItemIcon>
+                <ListItemText primary="Sign In" />
+              </ListItemButton>
+              <ListItemButton 
+                component={Link} 
+                to="/signup"
+                onClick={() => setMobileMenuOpen(false)}
+                sx={{ 
+                  borderRadius: 1,
+                  mb: 1,
+                  backgroundColor: 'var(--accent-primary)',
+                  color: '#fff',
+                  '&:hover': {
+                    backgroundColor: 'var(--accent-secondary)'
+                  }
+                }}
+              >
+                <ListItemIcon>
+                  <PersonAddIcon sx={{ color: '#fff' }} />
+                </ListItemIcon>
+                <ListItemText primary="Sign Up" />
+              </ListItemButton>
+            </>
+          )}
           <ListItemButton 
             onClick={() => {
               toggleDarkMode();

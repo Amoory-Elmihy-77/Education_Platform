@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider as MuiThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { useTheme } from './context/ThemeContext';
+import { useAuth } from './context/AuthContext';
 import Navbar from './components/common/Navbar';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -19,6 +21,7 @@ import ThemeButton from './components/common/ThemeButton';
 
 function AppContent() {
   const { darkMode } = useTheme();
+  const { currentUser } = useAuth();
 
   const theme = createTheme({
     palette: {
@@ -99,21 +102,21 @@ function AppContent() {
       <CssBaseline />
       <Router>
         <div className="min-h-screen" style={{ maxWidth: '100vw', overflow: 'hidden' }}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/course/:id" element={<CourseDetails />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/learning/:courseId" element={<Learning />} />
-            <Route path="/my-learning" element={<MyLearning />} />
-            <Route path="/add-course" element={<AddCourse />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/payment/:courseId" element={<Payment />} />
-          </Routes>
-          <HomeButton />
-          <ThemeButton />
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/course/:id" element={<CourseDetails />} />
+                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/learning/:courseId" element={<Learning />} />
+                <Route path="/my-learning" element={<MyLearning />} />
+                <Route path="/add-course" element={<AddCourse />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/payment/:courseId" element={<Payment />} />
+              </Routes>
+              <HomeButton />
+              <ThemeButton />
         </div>
       </Router>
     </MuiThemeProvider>
@@ -123,7 +126,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

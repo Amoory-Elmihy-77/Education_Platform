@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Paper,
@@ -11,10 +11,12 @@ import {
   CardContent,
   Divider,
   Box,
+  Alert,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { users } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -23,33 +25,28 @@ const validationSchema = yup.object({
 });
 
 export default function Profile() {
-  const [userType, setUserType] = useState('student');
-  const [userData, setUserData] = useState(null);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // In a real app, this would be an API call
-    // Mock getting current user data
-    const mockUser = userType === 'student' ? users.students[0] : users.instructors[0];
-    setUserData(mockUser);
-  }, [userType]);
+  if (!currentUser) {
+    navigate('/login');
+    return null;
+  }
 
   const formik = useFormik({
     initialValues: {
-      name: userData?.name || '',
-      email: userData?.email || '',
-      bio: userData?.bio || '',
+      name: currentUser.name || '',
+      email: currentUser.email || '',
+      bio: currentUser.bio || '',
     },
-    enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      setError('');
+      // In a real app, this would be an API call to update the user's profile
       console.log('Updated profile:', values);
-      // Handle profile update logic here
     },
   });
-
-  if (!userData) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Container 
@@ -71,9 +68,9 @@ export default function Profile() {
                   mb: { xs: 2, sm: 3, md: 4 },
                   bgcolor: 'primary.main'
                 }}
-                src={userData.avatar}
+                src={currentUser.avatar}
               >
-                {userData.name.charAt(0)}
+                {currentUser.name.charAt(0)}
               </Avatar>
               <Typography 
                 variant="h5" 
@@ -83,7 +80,7 @@ export default function Profile() {
                   fontSize: { xs: '1.25rem', sm: '1.5rem' }
                 }}
               >
-                {userData.name}
+                {currentUser.name}
               </Typography>
               <Typography 
                 variant="body1" 
@@ -92,7 +89,7 @@ export default function Profile() {
                   mb: { xs: 2, sm: 3, md: 4 }
                 }}
               >
-                {userType === 'instructor' ? 'Instructor' : 'Student'}
+                Student
               </Typography>
               <Button
                 variant="outlined"
@@ -102,7 +99,7 @@ export default function Profile() {
                 Change Avatar
               </Button>
               <Divider sx={{ my: { xs: 2, sm: 3, md: 4 } }} />
-              {userType === 'instructor' && (
+              {currentUser.role === 'instructor' && (
                 <Box sx={{ textAlign: 'left' }}>
                   <Typography 
                     variant="subtitle2" 
@@ -117,7 +114,7 @@ export default function Profile() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>Total Courses</Typography>
                       <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                        {userData.courses?.length || 0}
+                        {currentUser.enrolledCourses?.length || 0}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -130,7 +127,7 @@ export default function Profile() {
                   </Box>
                 </Box>
               )}
-              {userType === 'student' && (
+              {currentUser.role === 'student' && (
                 <Box sx={{ textAlign: 'left' }}>
                   <Typography 
                     variant="subtitle2" 
@@ -145,7 +142,7 @@ export default function Profile() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>Enrolled Courses</Typography>
                       <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                        {userData.enrolledCourses?.length || 0}
+                        {currentUser.enrolledCourses?.length || 0}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

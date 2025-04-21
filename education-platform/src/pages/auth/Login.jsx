@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Paper, Typography, TextField, Button, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Container, Paper, Typography, TextField, Button, FormControlLabel, Radio, RadioGroup, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useAuth } from '../../context/AuthContext';
 
 const validationSchema = yup.object({
   email: yup
@@ -18,6 +19,8 @@ const validationSchema = yup.object({
 export default function Login() {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('student');
+  const [error, setError] = useState('');
+  const { login } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -25,10 +28,14 @@ export default function Login() {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log('Login values:', { ...values, userType });
-      // Handle login logic here
-      navigate('/');
+    onSubmit: async (values) => {
+      setError('');
+      const result = login(values.email, values.password);
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error || 'Invalid email or password');
+      }
     },
   });
 
@@ -52,13 +59,19 @@ export default function Login() {
           variant="h5" 
           sx={{ 
             textAlign: 'center',
-            mb: { xs: 3, sm: 4 },
+            mb: { xs: 2, sm: 3 },
             fontWeight: 700,
             fontSize: { xs: '1.5rem', sm: '1.75rem' }
           }}
         >
           Welcome Back
         </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
         <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <RadioGroup
