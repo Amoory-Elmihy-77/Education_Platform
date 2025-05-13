@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace backend.Controllers
 
         // GET: api/purchases
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<IEnumerable<PurchaseDto>>> GetUserPurchases()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -44,7 +45,7 @@ namespace backend.Controllers
 
         // GET: api/purchases/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<PurchaseDto>> GetPurchase(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -63,7 +64,7 @@ namespace backend.Controllers
 
         // POST: api/purchases
         [HttpPost]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<PurchaseDto>> CreatePurchase(PurchaseCreateDto purchaseDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -106,7 +107,7 @@ namespace backend.Controllers
 
         // GET: api/purchases/courses
         [HttpGet("courses")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetPurchasedCourses()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -125,7 +126,7 @@ namespace backend.Controllers
 
         // GET: api/purchases/check/{courseId}
         [HttpGet("check/{courseId}")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<bool>> CheckPurchase(int courseId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +61,7 @@ namespace backend.Controllers
 
         // POST: api/sections/{sectionId}/lessons
         [HttpPost]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<ActionResult<LessonDto>> CreateLesson(int sectionId, LessonCreateDto lessonDto)
         {
             var section = await _context.Sections
@@ -104,7 +105,7 @@ namespace backend.Controllers
 
         // PUT: api/sections/{sectionId}/lessons/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<IActionResult> UpdateLesson(int sectionId, int id, LessonCreateDto lessonDto)
         {
             var lesson = await _context.Lessons
@@ -149,7 +150,7 @@ namespace backend.Controllers
 
         // DELETE: api/sections/{sectionId}/lessons/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<IActionResult> DeleteLesson(int sectionId, int id)
         {
             var lesson = await _context.Lessons

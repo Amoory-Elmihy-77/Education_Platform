@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -91,7 +92,7 @@ namespace backend.Controllers
 
         // POST: api/courses
         [HttpPost]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<ActionResult<CourseDto>> CreateCourse([FromForm] CourseCreateDto courseDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -123,7 +124,7 @@ namespace backend.Controllers
 
         // PUT: api/courses/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<IActionResult> UpdateCourse(int id, [FromForm] CourseUpdateDto courseDto)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -188,7 +189,7 @@ namespace backend.Controllers
 
         // DELETE: api/courses/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Instructor")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -246,7 +247,7 @@ namespace backend.Controllers
 
         // POST: api/courses/{courseId}/favorite
         [HttpPost("{courseId}/favorite")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<IActionResult> FavoriteCourse(int courseId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -281,7 +282,7 @@ namespace backend.Controllers
 
         // DELETE: api/courses/{courseId}/favorite
         [HttpDelete("{courseId}/favorite")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<IActionResult> RemoveFavoriteCourse(int courseId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -302,7 +303,7 @@ namespace backend.Controllers
 
         // GET: api/courses/favorites
         [HttpGet("favorites")]
-        [Authorize(Roles = "Student")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetFavoriteCourses()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
