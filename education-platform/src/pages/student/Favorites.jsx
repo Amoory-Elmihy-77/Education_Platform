@@ -9,26 +9,61 @@ import {
   Button,
   Rating,
   IconButton,
+  Alert,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Favorite } from '@mui/icons-material';
-import { courses, users } from '../../data/mockData';
+import { courses } from '../../data/mockData';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Favorites() {
   const [favoriteCourses, setFavoriteCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { currentUser, removeFromFavorites } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // In a real app, this would be an API call
-    const student = users.students[0]; // Mock current user
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
+    
+    // Get favorite courses based on current user's favorites
     const favorites = courses.filter(course => 
-      student.favorites.includes(course.id)
+      currentUser.favorites.includes(course.id)
     );
     setFavoriteCourses(favorites);
-  }, []);
+    setLoading(false);
+  }, [currentUser]);
 
   const handleRemoveFromFavorites = (courseId) => {
-    setFavoriteCourses(favoriteCourses.filter(course => course.id !== courseId));
+    // Call the removeFromFavorites method from AuthContext
+    const result = removeFromFavorites(courseId);
+    
+    if (result.success) {
+      // Update the local state to reflect the change
+      setFavoriteCourses(favoriteCourses.filter(course => course.id !== courseId));
+    }
   };
+  
+  // Redirect to login if not logged in
+  if (!currentUser && !loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Alert severity="info" sx={{ mb: 4 }}>
+          Please log in to view your favorites
+        </Alert>
+        <Button
+          component={Link}
+          to="/login?redirect=/favorites"
+          variant="contained"
+          color="primary"
+        >
+          Log In
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" className="py-8">

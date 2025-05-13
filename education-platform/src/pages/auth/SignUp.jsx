@@ -39,9 +39,13 @@ export default function SignUp() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setError('');
-      const result = signup(values.name, values.email, values.password);
+      const result = signup(values.name, values.email, values.password, userType);
       if (result.success) {
-        navigate('/login');
+        // Show success message with appropriate user type
+        const userTypeDisplay = userType === 'instructor' ? 'Instructor' : 'Student';
+        setError('');
+        // Redirect to login page with user type parameter
+        navigate(`/login?userType=${userType}`);
       } else {
         setError(result.error || 'Failed to create account');
       }

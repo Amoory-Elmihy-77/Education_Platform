@@ -18,6 +18,9 @@ import {
   ListItemText,
   ListItemIcon,
   Divider,
+  Menu,
+  MenuItem,
+  Avatar,
 } from '@mui/material';
 import { 
   Search as SearchIcon, 
@@ -29,12 +32,17 @@ import {
   PersonAdd as PersonAddIcon,
   DarkMode as DarkModeIcon,
   LightMode as LightModeIcon,
+  Dashboard as DashboardIcon,
+  Bookmark as BookmarkIcon,
+  ExitToApp as LogoutIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import logo from '../../assets/logo.svg';
 import { courses } from '../../data/mockData';
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -43,6 +51,16 @@ export default function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  
+  const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
+  
+  const handleProfileMenuOpen = (event) => {
+    setProfileMenuAnchorEl(event.currentTarget);
+  };
+  
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchorEl(null);
+  };
 
   const handleLogout = () => {
     logout();
@@ -186,31 +204,146 @@ export default function Navbar() {
             </Box>
 
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1, alignItems: 'center' }}>
-              {currentUser ? (
-                <>
-                  <IconButton
-                    component={Link}
-                    to="/profile"
-                    color="inherit"
-                    sx={{ 
-                      borderRadius: 2,
-                      p: 1,
-                    }}
-                  >
-                    <PersonIcon />
-                  </IconButton>
+              {/* Show different navigation options based on user type */}
+              {currentUser && currentUser.userType === 'instructor' ? (
+                // Instructor navigation - only profile menu
+                null
+              ) : (
+                // Student navigation - show regular navigation
+                !currentUser && (
                   <Button
+                    component={Link}
+                    to="/"
                     color="inherit"
-                    onClick={handleLogout}
-                    startIcon={<LoginIcon />}
                     sx={{ 
                       borderRadius: 2,
                       textTransform: 'none',
                       fontSize: '1rem',
                     }}
                   >
-                    Logout
+                    Browse Courses
                   </Button>
+                )
+              )}
+              
+              {currentUser ? (
+                <>
+                  <IconButton
+                    color="inherit"
+                    onClick={handleProfileMenuOpen}
+                    sx={{ 
+                      borderRadius: 2,
+                      p: 1,
+                    }}
+                    aria-controls={isProfileMenuOpen ? 'profile-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={isProfileMenuOpen ? 'true' : undefined}
+                  >
+                    <Avatar 
+                      sx={{ 
+                        width: 32, 
+                        height: 32,
+                        bgcolor: 'var(--accent-primary)',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      {currentUser?.name?.charAt(0).toUpperCase() || <PersonIcon />}
+                    </Avatar>
+                  </IconButton>
+                  <Menu
+                    id="profile-menu"
+                    anchorEl={profileMenuAnchorEl}
+                    open={isProfileMenuOpen}
+                    onClose={handleProfileMenuClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'profile-button',
+                    }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1.5,
+                        minWidth: 180,
+                        backgroundColor: 'var(--bg-primary)',
+                        color: 'var(--text-primary)',
+                        boxShadow: 'var(--card-shadow)',
+                      }
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                  >
+                    <MenuItem 
+                      onClick={() => {
+                        handleProfileMenuClose();
+                        navigate('/profile');
+                      }}
+                      sx={{ gap: 1.5 }}
+                    >
+                      <PersonIcon fontSize="small" />
+                      <Typography>Profile</Typography>
+                    </MenuItem>
+                    
+                    {/* Show different menu items based on user type */}
+                    {currentUser.userType === 'instructor' ? (
+                      // Instructor-specific menu items
+                      <>
+                        <MenuItem 
+                          onClick={() => {
+                            handleProfileMenuClose();
+                            navigate('/instructor-courses');
+                          }}
+                          sx={{ gap: 1.5 }}
+                        >
+                          <SchoolIcon fontSize="small" />
+                          <Typography>My Courses</Typography>
+                        </MenuItem>
+                        <MenuItem 
+                          onClick={() => {
+                            handleProfileMenuClose();
+                            navigate('/add-course');
+                          }}
+                          sx={{ gap: 1.5 }}
+                        >
+                          <DashboardIcon fontSize="small" />
+                          <Typography>Add Course</Typography>
+                        </MenuItem>
+                      </>
+                    ) : (
+                      // Student-specific menu items
+                      <>
+                        <MenuItem 
+                          onClick={() => {
+                            handleProfileMenuClose();
+                            navigate('/my-learning');
+                          }}
+                          sx={{ gap: 1.5 }}
+                        >
+                          <DashboardIcon fontSize="small" />
+                          <Typography>My Learning</Typography>
+                        </MenuItem>
+                        <MenuItem 
+                          onClick={() => {
+                            handleProfileMenuClose();
+                            navigate('/favorites');
+                          }}
+                          sx={{ gap: 1.5 }}
+                        >
+                          <BookmarkIcon fontSize="small" />
+                          <Typography>Favorites</Typography>
+                        </MenuItem>
+                      </>
+                    )}
+                    
+                    <Divider />
+                    <MenuItem 
+                      onClick={() => {
+                        handleProfileMenuClose();
+                        handleLogout();
+                      }}
+                      sx={{ gap: 1.5 }}
+                    >
+                      <LogoutIcon fontSize="small" />
+                      <Typography>Logout</Typography>
+                    </MenuItem>
+                  </Menu>
                 </>
               ) : (
                 <>

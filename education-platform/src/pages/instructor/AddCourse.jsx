@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   Container,
   Paper,
@@ -11,6 +12,7 @@ import {
   Card,
   CardContent,
   MenuItem,
+  Alert,
 } from '@mui/material';
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { useFormik } from 'formik';
@@ -37,9 +39,25 @@ const categories = [
 
 export default function AddCourse() {
   const navigate = useNavigate();
+  const { currentUser, addCourse } = useAuth();
   const [lessons, setLessons] = useState([
     { id: 1, title: '', duration: '', videoUrl: '' }
   ]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
+  // Check if user is logged in and is an instructor
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login?redirect=/add-course');
+      return;
+    }
+    
+    if (currentUser.userType !== 'instructor') {
+      navigate('/');
+      return;
+    }
+  }, [currentUser, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -51,12 +69,49 @@ export default function AddCourse() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // In a real app, this would be an API call
-      console.log('Course values:', {
+      setError('');
+      setSuccess('');
+      
+      // Filter out empty lessons
+      const filteredLessons = lessons.filter(lesson => lesson.title && lesson.duration);
+      
+      if (filteredLessons.length === 0) {
+        setError('Please add at least one lesson with title and duration');
+        return;
+      }
+      
+      // Create course data object
+      const courseData = {
         ...values,
-        lessons: lessons.filter(lesson => lesson.title && lesson.duration),
-      });
-      navigate('/');
+        price: parseFloat(values.price),
+        lessons: filteredLessons,
+        image: values.thumbnail, // For consistency with other course data
+        thumbnail: values.thumbnail,
+        duration: filteredLessons.reduce((total, lesson) => {
+          // Extract minutes from duration string (e.g., "15:00" -> 15)
+          const minutes = parseInt(lesson.duration.split(':')[0]) || 0;
+          return total + minutes;
+        }, 0),
+        language: 'English', // Default language
+        learningObjectives: [], // Can be added in a future enhancement
+      };
+      
+      // Add the course using the addCourse method from AuthContext
+      const result = addCourse(courseData);
+      
+      if (result.success) {
+        setSuccess('Course created successfully!');
+        // Reset form
+        formik.resetForm();
+        setLessons([{ id: 1, title: '', duration: '', videoUrl: '' }]);
+        
+        // Navigate to instructor courses page after a delay
+        setTimeout(() => {
+          navigate('/instructor-courses');
+        }, 2000);
+      } else {
+        setError(result.error || 'Failed to create course');
+      }
     },
   });
 
@@ -89,6 +144,18 @@ export default function AddCourse() {
       <Typography variant="h4" className="mb-6 font-bold text-center">
         Create New Course
       </Typography>
+      
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+      
+      {success && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          {success}
+        </Alert>
+      )}
 
       <form onSubmit={formik.handleSubmit}>
         <Paper className="p-6 mb-6">

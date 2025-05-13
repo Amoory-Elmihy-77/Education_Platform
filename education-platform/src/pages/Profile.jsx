@@ -12,6 +12,11 @@ import {
   Divider,
   Box,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -24,16 +29,33 @@ const validationSchema = yup.object({
   bio: yup.string(),
 });
 
+const passwordValidationSchema = yup.object({
+  currentPassword: yup.string().required('Current password is required'),
+  newPassword: yup
+    .string()
+    .min(8, 'Password should be of minimum 8 characters length')
+    .required('New password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
+    .required('Confirm password is required'),
+});
+
 export default function Profile() {
-  const { currentUser } = useAuth();
+  const { currentUser, updateProfile, changePassword } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   if (!currentUser) {
     navigate('/login');
     return null;
   }
 
+  // Profile update form
   const formik = useFormik({
     initialValues: {
       name: currentUser.name || '',
@@ -43,10 +65,69 @@ export default function Profile() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setError('');
-      // In a real app, this would be an API call to update the user's profile
-      console.log('Updated profile:', values);
+      setSuccess('');
+      
+      // Update the user's profile using the updateProfile method from AuthContext
+      const result = updateProfile({
+        name: values.name,
+        email: values.email,
+        bio: values.bio
+      });
+      
+      if (result.success) {
+        setSuccess('Profile updated successfully!');
+      } else {
+        setError(result.error || 'Failed to update profile');
+      }
     },
   });
+  
+  // Password change form
+  const passwordFormik = useFormik({
+    initialValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    },
+    validationSchema: passwordValidationSchema,
+    onSubmit: (values) => {
+      setPasswordError('');
+      setPasswordSuccess('');
+      
+      // Change password using the changePassword method from AuthContext
+      const result = changePassword(values.currentPassword, values.newPassword);
+      
+      if (result.success) {
+        setPasswordSuccess(result.message || 'Password changed successfully!');
+        // Reset form fields
+        passwordFormik.resetForm();
+        
+        // Close modal after a delay
+        setTimeout(() => {
+          setPasswordModalOpen(false);
+          setPasswordSuccess('');
+        }, 2000);
+      } else {
+        setPasswordError(result.error || 'Failed to change password');
+      }
+    },
+  });
+  
+  // Handle opening the password change modal
+  const handleOpenPasswordModal = () => {
+    setPasswordModalOpen(true);
+    setPasswordError('');
+    setPasswordSuccess('');
+    passwordFormik.resetForm();
+  };
+  
+  // Handle closing the password change modal
+  const handleClosePasswordModal = () => {
+    setPasswordModalOpen(false);
+    setPasswordError('');
+    setPasswordSuccess('');
+    passwordFormik.resetForm();
+  };
 
   return (
     <Container 
@@ -89,7 +170,7 @@ export default function Profile() {
                   mb: { xs: 2, sm: 3, md: 4 }
                 }}
               >
-                Student
+                {currentUser.userType === 'instructor' ? 'Instructor' : 'Student'}
               </Typography>
               <Button
                 variant="outlined"
@@ -161,9 +242,21 @@ export default function Profile() {
 
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-            <Typography variant="h6" className="mb-4">
+            <Typography variant="h6" sx={{ mb: 2 }}>
               Profile Settings
             </Typography>
+            
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            
+            {success && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {success}
+              </Alert>
+            )}
             <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <TextField
                 fullWidth
@@ -211,9 +304,7 @@ export default function Profile() {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={() => {
-                    // Handle password change logic
-                  }}
+                  onClick={handleOpenPasswordModal}
                   sx={{ order: { xs: 2, sm: 1 } }}
                 >
                   Change Password
@@ -241,6 +332,80 @@ export default function Profile() {
           </Paper>
         </Grid>
       </Grid>
+      
+      {/* Password Change Modal */}
+      <Dialog open={passwordModalOpen} onClose={handleClosePasswordModal}>
+        <DialogTitle>Change Password</DialogTitle>
+        <form onSubmit={passwordFormik.handleSubmit}>
+          <DialogContent>
+            <DialogContentText sx={{ mb: 2 }}>
+              Please enter your current password and a new password to update your account security.
+            </DialogContentText>
+            
+            {passwordError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {passwordError}
+              </Alert>
+            )}
+            
+            {passwordSuccess && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {passwordSuccess}
+              </Alert>
+            )}
+            
+            <TextField
+              margin="dense"
+              id="currentPassword"
+              name="currentPassword"
+              label="Current Password"
+              type="password"
+              fullWidth
+              variant="outlined"
+              value={passwordFormik.values.currentPassword}
+              onChange={passwordFormik.handleChange}
+              error={passwordFormik.touched.currentPassword && Boolean(passwordFormik.errors.currentPassword)}
+              helperText={passwordFormik.touched.currentPassword && passwordFormik.errors.currentPassword}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="dense"
+              id="newPassword"
+              name="newPassword"
+              label="New Password"
+              type="password"
+              fullWidth
+              variant="outlined"
+              value={passwordFormik.values.newPassword}
+              onChange={passwordFormik.handleChange}
+              error={passwordFormik.touched.newPassword && Boolean(passwordFormik.errors.newPassword)}
+              helperText={passwordFormik.touched.newPassword && passwordFormik.errors.newPassword}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="dense"
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirm New Password"
+              type="password"
+              fullWidth
+              variant="outlined"
+              value={passwordFormik.values.confirmPassword}
+              onChange={passwordFormik.handleChange}
+              error={passwordFormik.touched.confirmPassword && Boolean(passwordFormik.errors.confirmPassword)}
+              helperText={passwordFormik.touched.confirmPassword && passwordFormik.errors.confirmPassword}
+            />
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button onClick={handleClosePasswordModal} color="primary">
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Change Password
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </Container>
   );
 }

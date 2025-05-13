@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { courses } from '../data/mockData';
 
 import { useTheme } from '../context/ThemeContext';
+import Categories from '../components/home/Categories';
 
 export default function Home() {
   const { darkMode } = useTheme();
@@ -106,7 +107,7 @@ export default function Home() {
         >
           Featured Courses
         </Typography>
-        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
+        <Grid container spacing={{ xs: 2.5, sm: 3, md: 4 }}>
           {popularCourses.map((course) => (
             <Grid item key={course.id} xs={12} sm={6} md={4}>
               <Card
@@ -117,16 +118,19 @@ export default function Home() {
                   display: 'flex',
                   flexDirection: 'column',
                   textDecoration: 'none',
-                  borderRadius: 2,
-                  transition: 'box-shadow 0.3s ease-in-out',
+                  borderRadius: { xs: 1.5, sm: 2 },
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease-in-out',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   '&:hover': {
-                    boxShadow: '0 8px 16px var(--shadow-color)'
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.12)',
+                    transform: 'translateY(-4px)'
                   }
                 }}
               >
                 <CardMedia
                   component="img"
-                  height="200"
+                  height={window.innerWidth < 600 ? "180" : "200"}
                   image={course.image}
                   alt={course.title}
                   sx={{
@@ -135,21 +139,38 @@ export default function Home() {
                 />
                 <CardContent sx={{ 
                   flexGrow: 1, 
-                  p: { xs: 2, sm: 3 },
+                  p: { xs: 2, sm: 2.5, md: 3 },
                   display: 'flex',
                   flexDirection: 'column',
-                  height: '100%'
+                  height: '100%',
+                  gap: { xs: 0.75, sm: 1 }
                 }}>
                   <Typography
                     gutterBottom
                     variant="h6"
-                    sx={{ fontWeight: 600, color: 'var(--text-primary)' }}
+                    sx={{ 
+                      fontWeight: 600, 
+                      color: 'var(--text-primary)',
+                      fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+                      lineHeight: 1.3,
+                      mb: { xs: 0.5, sm: 1 }
+                    }}
                   >
                     {course.title}
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ mb: 2, color: 'var(--text-secondary)' }}
+                    sx={{ 
+                      mb: { xs: 1.5, sm: 2 }, 
+                      color: 'var(--text-secondary)',
+                      fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                      lineHeight: 1.5,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
                   >
                     {course.description}
                   </Typography>
@@ -157,26 +178,28 @@ export default function Home() {
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center',
+                      alignItems: 'flex-end',
                       mt: 'auto',
+                      pt: { xs: 1, sm: 1.5 }
                     }}
                   >
                     <Box sx={{ 
                       display: 'flex', 
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      alignItems: { xs: 'flex-start', sm: 'center' }, 
-                      gap: { xs: 1, sm: 2 }, 
-                      mt: 2 
+                      flexDirection: 'column',
+                      gap: { xs: 0.75, sm: 1 }
                     }}>
                       <Typography
                         variant="caption"
                         sx={{
-                          px: 1.5,
-                          py: 0.75,
+                          px: { xs: 1, sm: 1.5 },
+                          py: { xs: 0.5, sm: 0.75 },
                           borderRadius: 1,
                           backgroundColor: 'var(--bg-secondary)',
                           color: 'var(--text-secondary)',
                           fontWeight: 500,
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          display: 'inline-block',
+                          width: 'fit-content'
                         }}
                       >
                         {course.category}
@@ -184,9 +207,15 @@ export default function Home() {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <Typography
                           variant="body2"
-                          sx={{ color: 'var(--accent-primary)', fontWeight: 600 }}
+                          sx={{ 
+                            color: 'var(--accent-primary)', 
+                            fontWeight: 600,
+                            fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
                         >
-                          ★ {course.rating}
+                          <Box component="span" sx={{ color: '#fbbf24', mr: 0.5 }}>★</Box> {course.rating}
                         </Typography>
                         <Typography
                           variant="body2"
@@ -203,6 +232,9 @@ export default function Home() {
           ))}
         </Grid>
       </Container>
+
+      {/* Categories Section */}
+      <Categories />
     </Box>
   );
 }

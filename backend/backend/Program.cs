@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 
-    // 🔐 Add JWT Bearer definition
+    //  Add JWT Bearer definition
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter 'Bearer' followed by a space and your token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     });
 
-    // 🔐 Add global security requirement
+    //  Add global security requirement
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {

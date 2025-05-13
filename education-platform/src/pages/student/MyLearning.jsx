@@ -8,32 +8,64 @@ import {
   CardMedia,
   Button,
   LinearProgress,
+  Alert,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { courses, users } from '../../data/mockData';
+import { Link, useNavigate } from 'react-router-dom';
+import { courses } from '../../data/mockData';
+import { useAuth } from '../../context/AuthContext';
 
 export default function MyLearning() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
-    // In a real app, this would be an API call
-    const student = users.students[0]; // Mock current user
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
+    
+    // Get enrolled courses based on current user's enrollments
     const enrolled = courses.filter(course => 
-      student.enrolledCourses.includes(course.id)
+      currentUser.enrolledCourses.includes(course.id)
     );
     setEnrolledCourses(enrolled);
-  }, []);
+    setLoading(false);
+  }, [currentUser]);
 
   const getProgress = (courseId) => {
-    const student = users.students[0]; // Mock current user
-    const progress = student.progress[courseId];
+    if (!currentUser) return 0;
+    
+    const progress = currentUser.progress[courseId];
     if (!progress) return 0;
     
     const course = courses.find(c => c.id === courseId);
     if (!course) return 0;
     
-    return (progress.completed.length / course.lessons.length) * 100;
+    // If the course has lessons array, use its length, otherwise use a default value
+    const totalLessons = course.lessons?.length || 3;
+    return (progress.completed.length / totalLessons) * 100;
   };
+  
+  // Redirect to login if not logged in
+  if (!currentUser && !loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Alert severity="info" sx={{ mb: 4 }}>
+          Please log in to view your enrolled courses
+        </Alert>
+        <Button
+          component={Link}
+          to="/login?redirect=/my-learning"
+          variant="contained"
+          color="primary"
+        >
+          Log In
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" className="py-8">

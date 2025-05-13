@@ -14,6 +14,9 @@ import Favorites from './pages/student/Favorites';
 import Learning from './pages/student/Learning';
 import MyLearning from './pages/student/MyLearning';
 import AddCourse from './pages/instructor/AddCourse';
+import InstructorCourses from './pages/instructor/InstructorCourses';
+import CourseManagement from './pages/instructor/CourseManagement';
+import CategoryPage from './pages/CategoryPage';
 import Profile from './pages/Profile';
 import Payment from './pages/Payment';
 import HomeButton from './components/common/HomeButton';
@@ -55,6 +58,74 @@ function AppContent() {
       },
     },
     spacing: 8,
+    typography: {
+      h1: {
+        fontSize: '2.5rem',
+        '@media (min-width:600px)': {
+          fontSize: '3rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '3.5rem',
+        },
+      },
+      h2: {
+        fontSize: '2rem',
+        '@media (min-width:600px)': {
+          fontSize: '2.5rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '3rem',
+        },
+      },
+      h3: {
+        fontSize: '1.5rem',
+        '@media (min-width:600px)': {
+          fontSize: '1.75rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '2rem',
+        },
+      },
+      h4: {
+        fontSize: '1.25rem',
+        '@media (min-width:600px)': {
+          fontSize: '1.5rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '1.75rem',
+        },
+      },
+      h5: {
+        fontSize: '1.1rem',
+        '@media (min-width:600px)': {
+          fontSize: '1.25rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '1.5rem',
+        },
+      },
+      h6: {
+        fontSize: '1rem',
+        '@media (min-width:600px)': {
+          fontSize: '1.1rem',
+        },
+        '@media (min-width:960px)': {
+          fontSize: '1.25rem',
+        },
+      },
+      body1: {
+        fontSize: '0.95rem',
+        '@media (min-width:600px)': {
+          fontSize: '1rem',
+        },
+      },
+      body2: {
+        fontSize: '0.85rem',
+        '@media (min-width:600px)': {
+          fontSize: '0.9rem',
+        },
+      },
+    },
     components: {
       MuiContainer: {
         styleOverrides: {
@@ -108,10 +179,13 @@ function AppContent() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/course/:id" element={<CourseDetails />} />
+                <Route path="/category/:categoryId" element={<CategoryPage />} />
                 <Route path="/favorites" element={<Favorites />} />
                 <Route path="/learning/:courseId" element={<Learning />} />
                 <Route path="/my-learning" element={<MyLearning />} />
                 <Route path="/add-course" element={<AddCourse />} />
+                <Route path="/instructor-courses" element={<InstructorCourses />} />
+                <Route path="/instructor/course/:courseId" element={<CourseManagement />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/payment/:courseId" element={<Payment />} />
               </Routes>
