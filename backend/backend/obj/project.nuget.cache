@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "clfyhBjvUww=",
+  "dgSpecHash": "ZWgcOIPe2XI=",
   "success": true,
-  "projectFilePath": "C:\\DEPI_final\\Education_Platform\\backend\\backend\\backend.csproj",
+  "projectFilePath": "C:\\Amroo\\backend\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mohamed\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Mohamed\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
@@ -95,16 +95,5 @@
     "C:\\Users\\Mohamed\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\Mohamed\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "backend depends on System.Text.Json (>= 9.0.0) but System.Text.Json 9.0.0 was not found. System.Text.Json 9.0.4 was resolved instead.",
-      "libraryId": "System.Text.Json",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

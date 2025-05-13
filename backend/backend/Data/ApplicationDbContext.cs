@@ -32,6 +32,8 @@ namespace backend.Data
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            
+
             builder.Entity<Course>()
                 .HasOne(c => c.Instructor)
                 .WithMany(u => u.CreatedCourses)

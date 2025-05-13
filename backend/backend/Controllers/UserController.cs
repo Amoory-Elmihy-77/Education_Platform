@@ -1,32 +1,30 @@
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public UserController(
+        public UserController (
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
-            IMapper mapper)
+            IMapper mapper )
         {
             _userManager = userManager;
             _context = context;
@@ -35,7 +33,7 @@ namespace backend.Controllers
 
         // GET: api/user/profile
         [HttpGet("profile")]
-        public async Task<ActionResult<UserProfileDto>> GetUserProfile()
+        public async Task<ActionResult<UserProfileDto>> GetUserProfile ()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
@@ -50,7 +48,7 @@ namespace backend.Controllers
 
         // GET: api/user/instructors
         [HttpGet("instructors")]
-        public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetInstructors()
+        public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetInstructors ()
         {
             var instructors = await _userManager.GetUsersInRoleAsync("Instructor");
             return _mapper.Map<List<UserProfileDto>>(instructors);
@@ -58,7 +56,7 @@ namespace backend.Controllers
 
         // GET: api/user/instructor/{id}
         [HttpGet("instructor/{id}")]
-        public async Task<ActionResult<UserProfileDto>> GetInstructor(string id)
+        public async Task<ActionResult<UserProfileDto>> GetInstructor ( string id )
         {
             var user = await _userManager.FindByIdAsync(id);
 
@@ -72,7 +70,7 @@ namespace backend.Controllers
 
         // GET: api/user/instructor/{id}/courses
         [HttpGet("instructor/{id}/courses")]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetInstructorCourses(string id)
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetInstructorCourses ( string id )
         {
             var user = await _userManager.FindByIdAsync(id);
 
@@ -92,7 +90,7 @@ namespace backend.Controllers
 
         // PUT: api/user/profile
         [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfile(UserProfileDto profileDto)
+        public async Task<IActionResult> UpdateProfile ( UserProfileDto profileDto )
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -123,7 +121,7 @@ namespace backend.Controllers
 
         // PUT: api/user/change-password
         [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword(ChangePasswordDto model)
+        public async Task<IActionResult> ChangePassword ( ChangePasswordDto model )
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
@@ -149,7 +147,7 @@ namespace backend.Controllers
         // GET: api/user/enrolled-courses
         [HttpGet("enrolled-courses")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetEnrolledCourses()
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetEnrolledCourses ()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -168,7 +166,7 @@ namespace backend.Controllers
         // GET: api/user/my-courses
         [HttpGet("my-courses")]
         [Authorize(Roles = "Instructor")]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyCourses()
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyCourses ()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\DEPI_final\\Education_Platform\\backend\\backend\\backend.csproj": {}
+    "C:\\Amroo\\backend\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\DEPI_final\\Education_Platform\\backend\\backend\\backend.csproj": {
+    "C:\\Amroo\\backend\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\DEPI_final\\Education_Platform\\backend\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Amroo\\backend\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\DEPI_final\\Education_Platform\\backend\\backend\\backend.csproj",
+        "projectPath": "C:\\Amroo\\backend\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\Mohamed\\.nuget\\packages\\",
-        "outputPath": "C:\\DEPI_final\\Education_Platform\\backend\\backend\\obj\\",
+        "outputPath": "C:\\Amroo\\backend\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -90,7 +90,7 @@
             },
             "System.Text.Json": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[9.0.4, )"
             }
           },
           "imports": [

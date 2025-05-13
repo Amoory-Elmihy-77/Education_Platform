@@ -1,4 +1,3 @@
-﻿using backend.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.DTOs.Auth
@@ -20,8 +19,5 @@ namespace backend.DTOs.Auth
         [Required]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
-
-        [Required]
-        public UserRole Role { get; set; }
     }
 }

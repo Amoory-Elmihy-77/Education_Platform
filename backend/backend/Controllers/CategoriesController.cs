@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Data;
 using backend.DTOs;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,14 +48,13 @@ namespace backend.Controllers
 
         // POST: api/categories
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<CategoryDto>> CreateCategory(CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            categoryDto.Id = category.Id;
             return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, categoryDto);
         }
 

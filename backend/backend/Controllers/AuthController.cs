@@ -1,9 +1,8 @@
-﻿using backend.DTOs.Auth;
+using backend.DTOs.Auth;
 using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -15,10 +14,10 @@ namespace backend.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
 
-        public AuthController(
+        public AuthController (
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ITokenService tokenService)
+            ITokenService tokenService )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -26,7 +25,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto model)
+        public async Task<IActionResult> Register ( RegisterDto model )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -36,22 +35,22 @@ namespace backend.Controllers
                 UserName = model.Email,
                 Email = model.Email,
                 FullName = model.FullName,
-                Role = model.Role
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
+
+
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            // Add role
-            await _userManager.AddToRoleAsync(user, model.Role.ToString());
+
 
             return Ok(new { message = "User registered successfully" });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto model)
+        public async Task<IActionResult> Login ( LoginDto model )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

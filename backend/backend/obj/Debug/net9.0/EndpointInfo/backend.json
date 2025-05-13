@@ -1922,8 +1922,7 @@
           "confirmPassword",
           "email",
           "fullName",
-          "password",
-          "role"
+          "password"
         ],
         "type": "object",
         "properties": {
@@ -1945,9 +1944,6 @@
           "confirmPassword": {
             "minLength": 1,
             "type": "string"
-          },
-          "role": {
-            "$ref": "#/components/schemas/UserRole"
           }
         },
         "additionalProperties": false
@@ -2028,6 +2024,19 @@
         "type": "integer",
         "format": "int32"
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "Enter 'Bearer' followed by a space and your token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "name": "Authorization",
+        "in": "header"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }
